@@ -1,0 +1,20 @@
+[
+        {
+            "caption": "Home",
+            "url": "/home/"
+        },
+        {
+            "caption": "About",
+            "url": "/about/",
+            "children": [
+                {
+                    "caption": "History",
+                    "url": "/history/"
+                },
+                {
+                    "caption": "Bios",
+                    "url": "/bio/"
+                }                
+            ]
+        }
+]

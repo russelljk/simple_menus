@@ -1,0 +1,13 @@
+[
+        {
+            "caption": "Home",
+            "url": "/home/"
+        },
+        {
+            "caption": "About",
+            "url": "/about/"
+        },
+        {
+            "url": "/search/"
+        }        
+]

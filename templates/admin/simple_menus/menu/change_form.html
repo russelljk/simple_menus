@@ -1,0 +1,227 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block after_related_objects %}
+{% if change %}
+    <div id="widget-wrapper">
+    <div id="widget-container" >
+        <fieldset class="module">
+        <h2>Menu Structure</h2>
+        <div class="form-row">
+            <div class="help">
+                <p>Drag items around by the handle to set the menu's order.</p>
+                <p>Click the arrow next to the caption in order to change that items details.</p>
+            </div>
+        </div>
+        <div id="widget-container-inner">
+        <ul id="widget-list" class="issortable">
+            {% for item in original.get_flattened %}
+            <li data-level="{{item.depth}}" class="widget level-{{item.depth}}">
+                <div class="handle"><span title="Delete Item" class="close-btn"></span><span class="widget-caption">{{item.caption}}</span><span title="Toggle Options" class="toggle-btn"></span></div>
+                <div class="data-box">
+                    <div class="data-row">
+                        <label class="required">Caption</label><input class="item-caption" value="{{item.caption}}" /><br />
+                    </div>
+                    <div class="data-row">
+                        <label class="required">Url</label><input class="item-url" value="{{item.url}}" />
+                    </div>
+                </div>
+                <div class="child-box"></div>
+            </li>
+            {% endfor %}
+        </ul>
+        </fieldset>
+    </div></div>{# widget-container #}
+    </div>{# widget-wrapper #}
+    <div id="widget-palette">        
+        <fieldset class="module">
+            <h2>Add Menu Item</h2>
+            <div class="form-row">
+                <p class="help">Select the page or resource to add to the menu.</p>
+            </div>
+            <div class="form-row">
+                <dl>                
+                    <dd class="data-row">
+                    <select id="view-select">
+                    {% for group in original.build_links.items %}
+                        <optgroup label="{{group.0}}">
+                            {% for item in group.1 %}
+                            <option data-caption="{{item.0}}" value="{{item.1}}">{{item.0}}</option>
+                            {% endfor %}
+                      </optgroup>
+                    {% endfor %}
+                    <select></dd>
+                        <dd class="data-row">
+                            <label class="required" for="menuitem-caption">Caption</label><input name="menuitem-caption" id="menuitem-caption" value="{{item.caption}}" /><br />
+                        </dd>
+                        <dd class="data-row">
+                            <label class="required" for="menuitem-url">Url</label><input name="menuitem-url" id="menuitem-url" value="{{item.url}}" />
+                        </dd>
+                    <dd class="data-row"><button class="button" id="add-btn">Add Item</button></dd>
+                </dl>
+            </div>
+        </fieldset>
+    </div>
+    <div style="clear: both"></div>
+        <script>
+            $(function() {
+                window.widgetListModified = false;
+                
+                var setModifyFlag = function() {
+                    window.widgetListModified = true;
+                };
+                
+                $('#widget-list').on('click', '.toggle-btn', function(e) {
+                    e.preventDefault();
+                    var widget = $(this).closest('.widget');
+                    widget.toggleClass('open-widget');
+                    widget.find('.data-box').slideToggle(200);
+                    return false;
+                });
+                                
+                $('#widget-list').on('click', '.close-btn', function(e) {
+                    e.preventDefault();
+                    $(this).closest('.widget').remove();
+                    setModifyFlag();
+                    return false;
+                });
+                
+                $('#widget-list').on('change', '.item-caption', function(e) {
+                    var val = $(this).val();
+                    $(this).closest('.widget').find('.widget-caption').html(val);
+                    setModifyFlag();
+                });
+                
+                $widget_list = $('#widget-list');
+                $widget_list.nestedList({ 'onStop': setModifyFlag });
+                
+                
+
+                window.onbeforeunload = function closeEditorWarning(){
+                    if (window.widgetListModified) {
+                        return 'It looks like you have been editing something -- if you leave before submitting your changes will be lost.'
+                    }
+                };                
+                var unNest = function() {
+                    var items = $widget_list.find('li.widget');
+                    var currDepth = null;
+                    var prevData = null;
+                    var root = [];
+                    var itemList = [];
+                    var dest = itemList;
+                                        
+                    for (var i = 0; i < items.length; ++i) {
+                        var item = $(items[i]);
+                        var depth = item.attr('data-level');
+                        var caption = item.find('.item-caption').val();
+                        var url = item.find('.item-url').val();
+                        
+                        var data = {
+                            'depth': depth,
+                            'caption': caption,
+                            'url': url,
+                            'parent': null,
+                            'children': []
+                        };
+                                                
+                        if (currDepth === null) {
+                            currDepth = depth;
+                        }
+                        else {
+                            if (currDepth < depth) {                                
+                                dest = prevData.children;
+                                data.parent = prevData;
+                                currDepth = depth;
+                            }
+                            else if (currDepth > depth) {
+                                while (prevData.parent && currDepth > depth) {
+                                    prevData = prevData.parent;
+                                    currDepth = prevData.depth;
+                                    dest = prevData.children;
+                                    if (currDepth == depth) {
+                                        if (prevData.parent) {
+                                            dest = prevData.parent.children;
+                                        } else if (depth == 0) {
+                                            dest = itemList;
+                                        }
+                                    }
+                                }
+                                
+                                if (!dest) {
+                                    dest = itemList;
+                                }
+                                currDepth = depth;
+                            }
+                            else {
+                                if (depth != 0 && currDepth == depth) {
+                                    data.parent = prevData.parent;
+                                }
+                            }
+                        }
+                        dest.push(data);
+                        prevData = data;
+                    }
+                    
+                    return itemList;
+                };
+                
+                $('form#menu_form').submit(function(e) {
+                    try {
+                        if (window.widgetListModified) {
+                            var items = unNest();
+                            json = JSON.stringify(items, ['depth', 'caption', 'children', 'url'], 2);
+                            $('#id_schema').val(json);
+                            window.widgetListModified = false;
+                        }
+                    } catch(e) {
+                        e.preventDefault();
+                        alert('There was an error serializing the menu items.');
+                        return false;
+                    }
+                });
+                
+                var updatedSelected = function() {
+                    try {
+                        var selected = $('select#view-select').find(":selected");
+                        var caption = selected.attr('data-caption');
+                        var link = selected.val();
+                        var caption_input = $('input#menuitem-caption');
+                        var url_input = $('input#menuitem-url');
+                        caption_input.val(caption);
+                        url_input.val(link);
+                    } catch(e) {
+                        
+                    }  
+                };
+                
+                updatedSelected();
+                
+                $('select#view-select').change(function(e) {
+                    updatedSelected();
+                });
+                
+                $('#add-btn').click(function(e) {
+                    e.preventDefault();
+                    var caption_input = $('input#menuitem-caption');
+                    var url_input = $('input#menuitem-url');
+                                        
+                    var caption = caption_input.val() || 'Untitled';
+                    var link = url_input.val() || '/';
+                    var view = {
+                        'caption': caption, 
+                        'url': link, 
+                        'depth': 0 
+                    };
+                    
+                    {% verbatim %}
+                    var template = '<li data-level="{{depth}}" class="widget level-{{depth}}"><div class="handle"><span title="Delete Item" class="close-btn"></span><span class="widget-caption">{{caption}}</span><span title="Toggle Options" class="toggle-btn"></span></div><div class="data-box"><div class="data-row"><label class="required">Caption</label><input class="item-caption" value="{{caption}}" /><br /></div><div class="data-row"><label class="required">Url</label><input class="item-url" value="{{url}}" /></div></div><div class="child-box"></div></li>';
+                    {% endverbatim %}
+                    var li = Mustache.render(template, view);
+                    $widget_list.append(li);
+                    setModifyFlag();
+                    return false;
+                });
+            });
+        </script>
+{% endif %}
+{% endblock %}
