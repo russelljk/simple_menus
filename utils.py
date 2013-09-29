@@ -12,13 +12,17 @@ def build_link_select():
     from mylibs.helpers.caching import cache_safe_set, cache_safe_get        
     from django.conf import settings
     import re
-    ITEM_TYPE_RE = re.compile(ur'[a-zA-Z]+\:\s+(.+)')
+    ITEM_TYPE_RE = re.compile(ur'^[a-zA-Z]+\:\s+(.+)$')
     
-    SITEMAPS_LOCATION = getattr(settings,  'SITEMAPS_LOCATION', None)
-    SITEMAPS_NAME = getattr(settings,  'SITEMAPS_NAME', None)
-    SITEMAPS_EXCLUDE = getattr(settings,  'SITEMAPS_EXCLUDE', set())
-    
+    SIMPLE_MENUS_CONFIG = getattr(settings,  'SIMPLE_MENUS_CONFIG', None)
     groups = {}
+    
+    if SIMPLE_MENUS_CONFIG is None:
+        return groups
+    
+    SITEMAPS_LOCATION = SIMPLE_MENUS_CONFIG.get('SITEMAPS_NAME', None)
+    SITEMAPS_NAME = SIMPLE_MENUS_CONFIG.get('SITEMAPS_NAME', None)
+    SITEMAPS_EXCLUDE = SIMPLE_MENUS_CONFIG.get('SITEMAPS_EXCLUDE', set())
     
     if SITEMAPS_LOCATION is None:
         return groups

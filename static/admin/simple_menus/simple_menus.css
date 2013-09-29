@@ -11,6 +11,7 @@
     margin-left: -100%;
 
 }
+
 #widget-palette dl {
     padding: 0;
 }
@@ -48,6 +49,24 @@
     border: 2px dashed #BBBBBB;
     padding: 0px;
     border-radius: 8px;
+}
+
+noscript {
+    display: block;
+    background: transparent;
+    border: 1px dashed #FFF;
+    background: red;
+    color: #FFF;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+
+noscript p {
+    font-style: italic;
+    font-size: 12px;
+    line-height: 18px;
+    margin: 5px 0;
 }
 
 #widget-list li.level-0 {

@@ -3,41 +3,51 @@
 
 {% block after_related_objects %}
 {% if change %}
+    <noscript>
+        <p>The Menu Editor requires <strong>JavaScript</strong> be enabled. Please enable it and return to this page.</p>
+    </noscript>
     <div id="widget-wrapper">
-    <div id="widget-container" >
-        <fieldset class="module">
-        <h2>Menu Structure</h2>
-        <div class="form-row">
-            <div class="help">
-                <p>Drag items around by the handle to set the menu's order.</p>
-                <p>Click the arrow next to the caption in order to change that items details.</p>
-            </div>
-        </div>
-        <div id="widget-container-inner">
-        <ul id="widget-list" class="issortable">
-            {% for item in original.get_flattened %}
-            <li data-level="{{item.depth}}" class="widget level-{{item.depth}}">
-                <div class="handle"><span title="Delete Item" class="close-btn"></span><span class="widget-caption">{{item.caption}}</span><span title="Toggle Options" class="toggle-btn"></span></div>
-                <div class="data-box">
-                    <div class="data-row">
-                        <label class="required">Caption</label><input class="item-caption" value="{{item.caption}}" /><br />
-                    </div>
-                    <div class="data-row">
-                        <label class="required">Url</label><input class="item-url" value="{{item.url}}" />
+        <div id="widget-container" >
+            <fieldset class="module">
+                <h2>Menu Structure</h2>
+                <div class="form-row">
+                    <div class="help">
+                        <p>Drag items around by the handle to <strong>Reorder</strong> menu items.</p>
+                        <p>Click the arrow next to the caption in order to <strong>Edit</strong> that items details.</p>
+                        <p>To <strong>Delete</strong> a menu item press the close button on the far right on the handle.</p>
+                        <p>When finished press <strong>Save</strong> to keep your changes.</p>
                     </div>
                 </div>
-                <div class="child-box"></div>
-            </li>
-            {% endfor %}
-        </ul>
-        </fieldset>
-    </div></div>{# widget-container #}
+                <div id="widget-container-inner">
+                    <ul id="widget-list" class="issortable">
+                        {% for item in original.get_flattened %}
+                        <li data-level="{{item.depth}}" class="widget level-{{item.depth}}">
+                            <div class="handle"><span title="Delete Item" class="close-btn"></span><span class="widget-caption">{{item.caption}}</span><span title="Toggle Options" class="toggle-btn"></span></div>
+                            <div class="data-box">
+                                <div class="data-row">
+                                    <label class="required">Caption</label><input class="item-caption" value="{{item.caption}}" /><br />
+                                </div>
+                                <div class="data-row">
+                                    <label class="required">Url</label><input class="item-url" value="{{item.url}}" />
+                                </div>
+                            </div>
+                            <div class="child-box"></div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </fieldset>
+        </div>{# widget-container #}
     </div>{# widget-wrapper #}
     <div id="widget-palette">        
         <fieldset class="module">
             <h2>Add Menu Item</h2>
             <div class="form-row">
-                <p class="help">Select the page or resource to add to the menu.</p>
+                <div class="help">
+                    <p>Select the page or resource to add to the menu from the drop down list.</p>
+                    <p>You may edit the Caption and Url before adding it.</p>
+                    <p>If the page is not is the list you may enter it manually by editing the Caption and Url fields.</p>
+                </div>
             </div>
             <div class="form-row">
                 <dl>                
@@ -63,8 +73,19 @@
         </fieldset>
     </div>
     <div style="clear: both"></div>
+    {% comment %}
     <button id="dump">Dump</button>
     <pre id="message-dump"></pre>
+    <script>
+    $('#dump').click(function(e) {
+        e.preventDefault();
+        var items = unNest();
+        var json = JSON.stringify(items, ['depth', 'caption', 'children', 'url'], 2);
+        $('#message-dump').html(json);
+        return false;
+    });
+    </script>
+    {% endcomment %}
         <script>
             $(function() {
                 window.widgetListModified = false;
@@ -87,15 +108,7 @@
                     setModifyFlag();
                     return false;
                 });
-                
-                $('#dump').click(function(e) {
-                    e.preventDefault();
-                    var items = unNest();
-                    var json = JSON.stringify(items, ['depth', 'caption', 'children', 'url'], 2);
-                    $('#message-dump').html(json);
-                    return false;
-                });
-                
+                                
                 $('#widget-list').on('change', '.item-caption', function(e) {
                     var val = $(this).val();
                     $(this).closest('.widget').find('.widget-caption').html(val);
@@ -109,7 +122,7 @@
                 });
                 
                 $widget_list = $('#widget-list');
-                $widget_list.nestedList({ 'onStop': setModifyFlag });
+                $widget_list.nestedList({ 'MAX_LEVELS': {{original.get_max_depth}}, 'onStop': setModifyFlag });
                 
                 window.onbeforeunload = function closeEditorWarning(){
                     if (window.widgetListModified) {

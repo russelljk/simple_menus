@@ -1,21 +1,25 @@
 from django import template
 
 from django.template.defaulttags import url, URLNode
-from django.template import Node
+from django.template import Node, Library, loader, Context
 
 from simple_menus.models import Menu, MenuItem
 
 register = template.Library()
 
-def show_menu(context, menu_title):
+@register.simple_tag(takes_context=True)
+def show_menu(context, menu_title, template_name='simple_menus/menu.html'):
     menu = Menu.objects.get(title=menu_title)
     context['menu'] = menu
-    return context
+    
+    t = loader.get_template(template_name)
+    return t.render(context)
 
-register.inclusion_tag('simple_menus/menu.html', takes_context=True)(show_menu)
-
-def show_menuitem(context, item):
+@register.simple_tag(takes_context=True)
+def show_menuitem(context, item, template_name='simple_menus/menuitem.html'):
     context['menu'] = item
-    return context
+    
+    t = loader.get_template(template_name)
+    return t.render(context)
 
-register.inclusion_tag('simple_menus/menuitem.html', takes_context=True)(show_menuitem)
+

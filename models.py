@@ -3,8 +3,6 @@ from django.core.exceptions import ValidationError
 import simplejson
 from django.conf import settings
 
-SIMPLE_MENUS_MAX_DEPTH = getattr(settings, 'SIMPLE_MENUS_MAX_DEPTH', 2)
-
 class MenuItemEncoder(object):
     def __init__(self, menu_items):
         self._fields = {'caption': (True, basestring), 'url': (True, basestring), 'children': (False, None),}
@@ -183,7 +181,16 @@ class Menu(models.Model):
         self.clean_menu_items()
     
     def get_max_depth(self):
-        return SIMPLE_MENUS_MAX_DEPTH
+        SIMPLE_MENUS_CONFIG = getattr(settings, 'SIMPLE_MENUS_CONFIG', None)
+        MAX_DEPTH = None
+        
+        if SIMPLE_MENUS_CONFIG:
+            MAX_DEPTH = SIMPLE_MENUS_CONFIG.get('MAX_DEPTH')
+        
+        if MAX_DEPTH is None:
+            MAX_DEPTH = 2        
+        
+        return MAX_DEPTH
     
     def load_schema(self, schema):
         self.schema = schema
@@ -201,7 +208,6 @@ class Menu(models.Model):
         return super(Menu, self).save(*args, **kwargs)
     
     def clean_menu_items(self):
-        print self.schema
         items = self.items
         encoder = MenuItemEncoder(items)
         self.schema = encoder.encode()
