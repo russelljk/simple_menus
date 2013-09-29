@@ -1,0 +1,12 @@
+{% load simple_menus_tags %}
+{% load active %}
+<li id="menuitem-{{item.depth}}-{{forloop.counter0}}" {% if item.depth == 0 %}class="{% active_child request item.url %}"{% endif %}>
+    <a href="{{item.url}}" title="{{ item.caption }}">{{ item.caption }}</a>
+    {% if item.children %}
+    <ul class="children">
+        {% for item in item.children %}
+            {% show_menuitem item %}
+        {% endfor %}
+    </ul>
+    {% endif %}    
+</li>

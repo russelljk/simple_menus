@@ -63,6 +63,8 @@
         </fieldset>
     </div>
     <div style="clear: both"></div>
+    <button id="dump">Dump</button>
+    <pre id="message-dump"></pre>
         <script>
             $(function() {
                 window.widgetListModified = false;
@@ -86,17 +88,29 @@
                     return false;
                 });
                 
+                $('#dump').click(function(e) {
+                    e.preventDefault();
+                    var items = unNest();
+                    var json = JSON.stringify(items, ['depth', 'caption', 'children', 'url'], 2);
+                    $('#message-dump').html(json);
+                    return false;
+                });
+                
                 $('#widget-list').on('change', '.item-caption', function(e) {
                     var val = $(this).val();
                     $(this).closest('.widget').find('.widget-caption').html(val);
                     setModifyFlag();
                 });
                 
+                $('#widget-list').on('change', '.item-url', function(e) {
+                    // var val = $(this).val();
+                    // validateUrl(val);
+                    setModifyFlag();
+                });
+                
                 $widget_list = $('#widget-list');
                 $widget_list.nestedList({ 'onStop': setModifyFlag });
                 
-                
-
                 window.onbeforeunload = function closeEditorWarning(){
                     if (window.widgetListModified) {
                         return 'It looks like you have been editing something -- if you leave before submitting your changes will be lost.'
@@ -169,7 +183,7 @@
                     try {
                         if (window.widgetListModified) {
                             var items = unNest();
-                            json = JSON.stringify(items, ['depth', 'caption', 'children', 'url'], 2);
+                            var json = JSON.stringify(items, ['depth', 'caption', 'children', 'url'], 2);
                             $('#id_schema').val(json);
                             window.widgetListModified = false;
                         }

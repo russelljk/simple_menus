@@ -1,6 +1,9 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 import simplejson
+from django.conf import settings
+
+SIMPLE_MENUS_MAX_DEPTH = getattr(settings, 'SIMPLE_MENUS_MAX_DEPTH', 2)
 
 class MenuItemEncoder(object):
     def __init__(self, menu_items):
@@ -10,6 +13,8 @@ class MenuItemEncoder(object):
     
     def encode_single_object(self, obj):
         # First check that we don't have a circular dependency.
+        obj.clean()
+        
         if obj in self.encoded:
             raise ValidationError("MenuItem's cannot have circular dependencies.")
         self.encoded.add(obj)
@@ -83,6 +88,17 @@ class MenuItem(object):
             for child in self.children:
                 child.set_depth(self.depth + 1, deep)
     
+    def clean(self):
+        level = self.depth + 1
+        if not self.caption:
+            if self.url:
+                raise ValidationError('Menu Item ({0}) at level {1}: caption is required.'.format(self.url, level))
+            else:
+                raise ValidationError('Menu Item at level {0}: both caption and url are required.'.format(level))
+            
+        if not self.url:
+            raise ValidationError('Menu Item {0} at level {1}: url is required.'.format(self.caption, level))
+    
     def flatten(self):
         data = {
             'caption': self.caption,
@@ -139,6 +155,7 @@ def make_menus():
     ]"""
     return json
 
+# TODO: Add is_dirty flag to prevent having to serialize after every insert.
 class Menu(models.Model):
     title = models.CharField(max_length=50)
     schema = models.TextField(blank=True, default='')
@@ -164,7 +181,10 @@ class Menu(models.Model):
         else:
             items.append(item)
         self.clean_menu_items()
-        
+    
+    def get_max_depth(self):
+        return SIMPLE_MENUS_MAX_DEPTH
+    
     def load_schema(self, schema):
         self.schema = schema
         return self.items
