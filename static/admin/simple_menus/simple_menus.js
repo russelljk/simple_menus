@@ -82,7 +82,7 @@
                 if (next_depth > prev_depth) {
                     return next_depth;
                 } 
-                else if (depth > prev_depth + 1) {
+                else if (depth >= prev_depth + 1) {
                     return prev_depth + 1;
                 } else if (next_depth == prev_depth) {
                     return prev_depth;
@@ -176,7 +176,7 @@
                 start: function(e, ui) {
                     var transport, classes;
                     var item = ui.item.children('div');
-            
+                    
                     itemChildren = null;
                     transport = ui.item.children('.child-box');
 			        
