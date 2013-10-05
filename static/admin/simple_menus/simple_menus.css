@@ -7,6 +7,8 @@
 #widget-palette {
     width: 300px;
     float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
     margin-left: -100%;
 
@@ -20,6 +22,8 @@
 #widget-palette button {
     margin-left: 0;
     width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
 
@@ -32,6 +36,7 @@
 }
 
 #widget-list {
+    max-width: 400px;
     list-style: none;
     position:relative;
     list-style-type: none; margin: 0; padding: 0; 
@@ -41,14 +46,13 @@
     list-style-type: none;
     margin: 5px 0; 
     padding: 0; 
-    background: #FAFAFA;
+    background: #f4f4f4;
 }
 
 #widget-list li.placeholder {
     background: transparent;
-    border: 2px dashed #BBBBBB;
+    border: 2px dashed #C2C9CC;
     padding: 0px;
-    border-radius: 8px;
 }
 
 noscript {
@@ -59,7 +63,6 @@ noscript {
     color: #FFF;
     padding: 10px 20px;
     margin: 10px 0;
-    border-radius: 8px;
 }
 
 noscript p {
@@ -83,16 +86,15 @@ noscript p {
 
 #widget-list li.level-3 {
     margin-left: 60px;
-} 
+}
 
 #widget-list li.level-4 {
     margin-left: 80px;
 }
 
 .widget {
-    border-radius: 8px 8px 0px 0px;
-    border: 1px solid #CCC;
-    border-bottom-color: #AAA;
+    border: 1px solid #C2C9CC;
+    border-bottom-color: #C2C9CC;
 }
 
 .data-box {
@@ -105,7 +107,8 @@ noscript p {
 }
 
 .data-row label {
-    width: 80px;
+    width: 60px;
+    margin-right: 10px;
     display: inline-block;
     font-weight: bold;
 }
@@ -115,7 +118,7 @@ noscript p {
     color: #7A858D;
     background: white;
     outline: none;
-    border: 1px solid #BBBBBB;
+    border: 1px solid #C2C9CC;
     background: #fff;
     padding: 2px 10px;
     font-size: 12px;
@@ -123,7 +126,7 @@ noscript p {
     line-height: 11px;
     margin: 0px;
     border-radius: 4px;
-    min-width: 150px;
+    min-width: 200px;
 }
 
 .close-btn {
@@ -162,34 +165,34 @@ noscript p {
 }
 
 #widget-list li div.handle {
-    background-color: #f1f1f1;
-    background-image: -ms-linear-gradient(top,#f9f9f9,#e4e4e4);
-    background-image: -moz-linear-gradient(top,#f9f9f9,#e4e4e4);
-    background-image: -o-linear-gradient(top,#f9f9f9,#e4e4e4);
-    background-image: -webkit-gradient(linear,left top,left bottom,from(#f9f9f9),to(#e4e4e4));
-    background-image: -webkit-linear-gradient(top,#f9f9f9,#e4e4e4);
-    background-image: linear-gradient(top,#f9f9f9,#e4e4e4);  
+    background: #eee;
+    background-image: -webkit-gradient(linear,left bottom,left top,from(#e5e5e5),to(#f4f4f4));
+    background-image: -webkit-linear-gradient(bottom,#e5e5e5,#f4f4f4);
+    background-image: -moz-linear-gradient(bottom,#e5e5e5,#f4f4f4);
+    background-image: -o-linear-gradient(bottom,#e5e5e5,#f4f4f4);
+    background-image: linear-gradient(to top,#e5e5e5,#f4f4f4);  
 }
 
 #widget-list li div.handle {
     position: relative;    
     cursor: move;
-    border-bottom: 1px solid #e4e4e4;
+    border-bottom: 0px solid #C2C9CC;
     border-top: 1px solid #fff;
     padding: 8px 35px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
-    border-radius: 8px 8px 0px 0px;
     font-size: 12px;
     height: 34px;
     overflow: hidden;
-    color: #333;
+    color: #6A7888;
     text-align: left;
     font-weight: bold;
     text-shadow: 1px 1px 0px RGBA(255,255,255,0.45);
 }
 
 #widget-list li.open-widget div.handle {
-    border-bottom: 1px solid #bbb;    
+    border-bottom: 1px solid #C2C9CC;
 }
 
 .widget-body {
@@ -203,5 +206,5 @@ noscript p {
 }
 
 #widget-palette .ui-widget-content.ui-accordion-content-active {
-    border-top: 1px solid #CCC;
+    border-top: 1px solid #C2C9CC;
 }

@@ -8,10 +8,9 @@
             LIST_MARGIN_SIZE: 5,
             onStop: undefined
 		};
-        
 		//Extending options:
 		this.opts = $.extend({}, this.defaults, options);
-    
+            
 		//Privates:
 		this.$el = $(el);
 	}

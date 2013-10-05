@@ -140,19 +140,6 @@ class MenuItem(object):
         s = Serializer(self, {'caption': (True, basestring), 'url': (True, basestring), 'children': (False, None),})
         return s
 
-def make_menus():
-    json = """[
-        {
-            "caption": "Home",
-            "url": "/home/"
-        },
-        {
-            "caption": "About",
-            "url": "/about/"
-        }
-    ]"""
-    return json
-
 # TODO: Add is_dirty flag to prevent having to serialize after every insert.
 class Menu(models.Model):
     title = models.CharField(max_length=50)

@@ -1,6 +1,4 @@
 from django import template
-
-from django.template.defaulttags import url, URLNode
 from django.template import Node, Library, loader, Context
 
 from simple_menus.models import Menu, MenuItem

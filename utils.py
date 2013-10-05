@@ -22,8 +22,11 @@ def build_link_select():
     
     SITEMAPS_LOCATION = SIMPLE_MENUS_CONFIG.get('SITEMAPS_LOCATION', None)
     SITEMAPS_NAME = SIMPLE_MENUS_CONFIG.get('SITEMAPS_NAME', None)
-    SITEMAPS_EXCLUDE = SIMPLE_MENUS_CONFIG.get('SITEMAPS_EXCLUDE', set())
+    SITEMAPS_EXCLUDE = SIMPLE_MENUS_CONFIG.get('SITEMAPS_EXCLUDE', None)
     
+    if SITEMAPS_EXCLUDE:
+        SITEMAPS_EXCLUDE = list(SITEMAPS_EXCLUDE)
+        
     if SITEMAPS_LOCATION is None:
         return groups
     
@@ -38,8 +41,8 @@ def build_link_select():
     if cache_groups is not None:
         return cache_groups
     
-    for name in _sitemaps:        
-        if name in SITEMAPS_EXCLUDE:
+    for name in _sitemaps:
+        if SITEMAPS_EXCLUDE and (name in SITEMAPS_EXCLUDE):
             continue
         try:
             _SitemapClass = _sitemaps[name]

@@ -52,7 +52,9 @@
             <div class="form-row">
                 <dl>                
                     <dd class="data-row">
-                    <select id="view-select">
+                    <label class="required" for="view-select">Pages</label></dd>
+                    <dd class="data-row"><select id="view-select" name="view-select">
+                        <option value="">----</option>
                     {% for group in original.build_links.items %}
                         <optgroup label="{{group.0}}">
                             {% for item in group.1 %}
@@ -61,11 +63,18 @@
                       </optgroup>
                     {% endfor %}
                     <select></dd>
+                        <dd><hr /></dd>
                         <dd class="data-row">
-                            <label class="required" for="menuitem-caption">Caption</label><input name="menuitem-caption" id="menuitem-caption" value="{{item.caption}}" /><br />
+                            <label class="required" for="menuitem-caption">Caption</label>
                         </dd>
                         <dd class="data-row">
-                            <label class="required" for="menuitem-url">Url</label><input name="menuitem-url" id="menuitem-url" value="{{item.url}}" />
+                            <input name="menuitem-caption" id="menuitem-caption" value="{{item.caption}}" /><br />
+                        </dd>
+                        <dd class="data-row">
+                            <label class="required" for="menuitem-url">Url</label>
+                        </dd>
+                        <dd class="data-row">
+                            <input name="menuitem-url" id="menuitem-url" value="{{item.url}}" />
                         </dd>
                     <dd class="data-row"><button class="button" id="add-btn">Add Item</button></dd>
                 </dl>
@@ -108,7 +117,7 @@
                     setModifyFlag();
                     return false;
                 });
-                                
+                
                 $('#widget-list').on('change', '.item-caption', function(e) {
                     var val = $(this).val();
                     $(this).closest('.widget').find('.widget-caption').html(val);
@@ -211,6 +220,7 @@
                     try {
                         var selected = $('select#view-select').find(":selected");
                         var caption = selected.attr('data-caption');
+                        if (!caption) return;
                         var link = selected.val();
                         var caption_input = $('input#menuitem-caption');
                         var url_input = $('input#menuitem-url');
@@ -227,6 +237,13 @@
                     updatedSelected();
                 });
                 
+                var selectBlank = function(e) {
+                     $('select#view-select').val('');
+                };
+                
+                $('input[name=menuitem-caption]').change(selectBlank);
+                $('input[name=menuitem-url]').change(selectBlank);
+                                
                 $('#add-btn').click(function(e) {
                     e.preventDefault();
                     var caption_input = $('input#menuitem-caption');
