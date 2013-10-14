@@ -57,9 +57,7 @@
                 item.addClass(depth_class);
                 item.attr('data-level', currentDepth);
             };
-            
-            //var $sortables = $('#sortable');
-            
+                        
             var findChildren = function(item) {
                 var next = item.next();
                 var depth = itemDepth(item);
@@ -68,7 +66,8 @@
                     var next_depth = itemDepth(next);
                     if (next_depth <= depth) {
                         break;
-                    } else {
+                    }
+                    else {
                         childrenDepth = Math.max(childrenDepth, next_depth);
                         items = items.add(next);
                     }
@@ -83,7 +82,8 @@
                 } 
                 else if (depth >= prev_depth + 1) {
                     return prev_depth + 1;
-                } else if (next_depth == prev_depth) {
+                } 
+                else if (next_depth == prev_depth) {
                     return prev_depth;
                 }
                 return depth;
@@ -107,7 +107,8 @@
                         if (depth == currentDepth) {
                             return;
                         }
-                    } else {
+                    }
+                    else {
                         hasChanged = false; // So that we can skip the next update if its the same.
                     }
                     
@@ -126,7 +127,8 @@
                     
                     if (prev_depth === null) { 
                         depth = 0;
-                    } else {
+                    }
+                    else {
                         if (prev_depth <= depth) {
                             if (next_depth !== null) {                            
                                 depth = checkDepth(prev_depth, depth, next_depth);
@@ -134,7 +136,8 @@
                             else if (depth > prev_depth + 1) {
                                 depth = prev_depth + 1;
                             }
-                        } else {
+                        }
+                        else {
                             if (next_depth !== null) {
                                 depth = checkDepth(prev_depth, depth, next_depth);
                             }
@@ -167,17 +170,18 @@
                     if( ! ui.placeholder.parent().hasClass('issortable') ) {
                         if (prev.length) {
                             prev.after( ui.placeholder );
-                        } else {
+                        }
+                        else {
                             _this.$el.prepend( ui.placeholder );
                         }
                     }
     			},
                 start: function(e, ui) {
-                    var transport, classes;
+                    var childbox, classes;
                     var item = ui.item.children('div');
                     
                     itemChildren = null;
-                    transport = ui.item.children('.child-box');
+                    childbox = ui.item.children('.child-box');
 			        
                     originalDepth = itemDepth(ui.item);
                     childrenDepth = 0;
@@ -188,8 +192,8 @@
                     height = item.parent().outerHeight();
                     
                     if (itemChildren) {
-                        transport.append(itemChildren);
-                        height += transport.outerHeight();
+                        childbox.append(itemChildren);
+                        height += childbox.outerHeight();
                         if (itemChildren.length)                   
                             height += _this.opts.LIST_MARGIN_SIZE;
                     }                
@@ -212,7 +216,8 @@
                                 currentDepth = oldDepth;
                             });
                         }
-                    } else {
+                    }
+                    else {
                         
                     }
                     updateDepth(ui.item);
