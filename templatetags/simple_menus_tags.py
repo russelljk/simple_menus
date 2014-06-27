@@ -24,6 +24,17 @@ def show_menu(context, menu_title, template_name='simple_menus/menu.html', cache
     return res
 
 @register.simple_tag(takes_context=True)
+def render_menu(context, menu, template_name='simple_menus/menu.html'):
+    res = None
+    context['menu'] = menu
+    print context
+    t = loader.get_template(template_name)
+    
+    res = t.render(context)    
+    
+    return res
+
+@register.simple_tag(takes_context=True)
 def show_menuitem(context, item, template_name='simple_menus/menuitem.html'):
     context['menu'] = item
     

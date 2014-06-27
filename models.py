@@ -178,6 +178,9 @@ class Menu(models.Model):
             MAX_DEPTH = 2        
         
         return MAX_DEPTH
+        
+    def __unicode__(self):
+        return 'Menu: {0}'.format(self.title)
     
     def load_schema(self, schema):
         self.schema = schema
