@@ -11,12 +11,12 @@
             <fieldset class="module">
                 <h2>Menu Structure</h2>
                 <div class="form-row">
-                    <div class="help">
-                        <p>Drag items around by the handle to <strong>Reorder</strong> menu items.</p>
-                        <p>Click the arrow next to the caption in order to <strong>Edit</strong> that items details.</p>
-                        <p>To <strong>Delete</strong> a menu item press the close button on the far right on the handle.</p>
-                        <p>When finished press <strong>Save</strong> to keep your changes.</p>
-                    </div>
+                    <ol class="help">
+                        <li>Drag items around by the handle to <strong>Reorder</strong> menu items.</li>
+                        <li>Click the arrow next to the caption in order to <strong>Edit</strong> that items details.</li>
+                        <li>To <strong>Delete</strong> a menu item press the close button on the far right on the handle.</li>
+                        <li>When finished press <strong>Save</strong> to keep your changes.</li>
+                    </ol>
                 </div>
                 <div id="widget-container-inner">
                     <ul id="widget-list" class="issortable">
@@ -25,10 +25,10 @@
                             <div class="handle"><span title="Delete Item" class="close-btn"></span><span class="widget-caption">{{item.caption}}</span><span title="Toggle Options" class="toggle-btn"></span></div>
                             <div class="data-box">
                                 <div class="data-row">
-                                    <label class="required">Caption</label><input class="item-caption" value="{{item.caption}}" /><br />
+                                    <label class="required">Caption</label><input type="text" class="item-caption" value="{{item.caption}}" /><br />
                                 </div>
                                 <div class="data-row">
-                                    <label class="required">Url</label><input class="item-url" value="{{item.url}}" />
+                                    <label class="required">Url</label><input type="text" class="item-url" value="{{item.url}}" />
                                 </div>
                             </div>
                             <div class="child-box"></div>
@@ -68,13 +68,13 @@
                             <label class="required" for="menuitem-caption">Caption</label>
                         </dd>
                         <dd class="data-row">
-                            <input name="menuitem-caption" id="menuitem-caption" value="{{item.caption}}" /><br />
+                            <input type="text" name="menuitem-caption" id="menuitem-caption" value="{{item.caption}}" /><br />
                         </dd>
                         <dd class="data-row">
                             <label class="required" for="menuitem-url">Url</label>
                         </dd>
                         <dd class="data-row">
-                            <input name="menuitem-url" id="menuitem-url" value="{{item.url}}" />
+                            <input type="text" name="menuitem-url" id="menuitem-url" value="{{item.url}}" />
                         </dd>
                     <dd class="data-row"><button class="button" id="add-btn">Add Item</button></dd>
                 </dl>
