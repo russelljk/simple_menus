@@ -1,6 +1,6 @@
 {% load simple_menus_tags %}
 {% load active %}
-<li class="menuitem {% if forloop.first %}menuitem-first {% endif %}{% if forloop.last %} menuitem-last {% endif %} menuitem-{{forloop.counter0}} level-{{item.depth}}{% if item.depth == 0 %} {% active_child request item.url %}{% endif %}">
+<li class="menuitem {% if forloop.first %}menuitem-first {% endif %}{% if forloop.last %} menuitem-last {% endif %} menuitem-{{forloop.counter0}} level-{{item.depth}}{% if item.depth == 0 %} {% active_child request item.url %}{% endif %}{% if item.children %} has-children{% endif %}">
     <a href="{{item.url}}" title="{{ item.caption }}" class="link-level-{{item.depth}}">{{ item.caption }}</a>
     {% if item.children %}
     <ul class="children">
