@@ -2,7 +2,12 @@ from django.db import models
 from django.core.exceptions import ValidationError
 import simplejson
 from django.conf import settings
+from django.utils.six import iteritems as six_iteritems
+import sys
 
+if sys.version_info > (3, 0):
+    basestring = str
+    
 class MenuItemEncoder(object):
     def __init__(self, menu_items):
         self._fields = {'caption': (True, basestring), 'url': (True, basestring), 'children': (False, None),}
@@ -18,7 +23,7 @@ class MenuItemEncoder(object):
         self.encoded.add(obj)
         
         data = {}
-        for field_name, field_info in self._fields.iteritems():
+        for field_name, field_info in six_iteritems(self._fields):
             field_required, field_class = field_info
             
             if hasattr(obj, field_name):

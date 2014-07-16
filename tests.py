@@ -1,6 +1,7 @@
 from django.test import TestCase
 from simple_menus.models import *
 from django.core.exceptions import ValidationError
+from django.utils.six import iteritems as six_iteritems
 
 import os
 APP_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -13,7 +14,7 @@ class BaseTestCase(TestCase):
             'missing_attr_json': 'missing_attr.json',
         }
         
-        for name, loc in JSON_FILES.iteritems():
+        for name, loc in six_iteritems(JSON_FILES):
             f = open(APP_PATH + '/testdata/json/' + loc)
             setattr(self, name, f.read())
             f.close()
