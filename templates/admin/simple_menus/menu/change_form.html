@@ -82,21 +82,8 @@
         </fieldset>
     </div>
     <div style="clear: both"></div>
-    {% comment %}
-    <button id="dump">Dump</button>
-    <pre id="message-dump"></pre>
-    <script>
-    $('#dump').click(function(e) {
-        e.preventDefault();
-        var items = unNest();
-        var json = JSON.stringify(items, ['depth', 'caption', 'children', 'url'], 2);
-        $('#message-dump').html(json);
-        return false;
-    });
-    </script>
-    {% endcomment %}
         <script>
-            $(function() {
+            django.jQuery(function($) {
                 window.widgetListModified = false;
                 
                 var setModifyFlag = function() {
@@ -265,7 +252,7 @@
                     setModifyFlag();
                     return false;
                 });
-            });
+            }(django.jQuery));
         </script>
 {% endif %}
 {% endblock %}

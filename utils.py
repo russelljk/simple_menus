@@ -1,46 +1,46 @@
-#from django.utils.safestring import mark_safe    
+#from django.utils.safestring import mark_safe
 
 def build_link_select():
     '''
     Build groups of links based on what is in the site's sitemaps.
-    
+
     'Genre': {
         [   ('Item 0', '/path/to/item0'),
             ('Item 1', '/path/to/item1') ]
     }
     '''
-    from mylibs.helpers.caching import cache_safe_set, cache_safe_get        
+    from mylibs.helpers.caching import cache_safe_set, cache_safe_get
     from django.conf import settings
     import re
     ITEM_TYPE_RE = re.compile(ur'^[a-zA-Z]+\:\s+(.+)$')
-    
+
     SIMPLE_MENUS_CONFIG = getattr(settings,  'SIMPLE_MENUS_CONFIG', None)
     groups = {}
-    
+
     if SIMPLE_MENUS_CONFIG is None:
         return groups
-    
+
     SITEMAPS_LOCATION = SIMPLE_MENUS_CONFIG.get('SITEMAPS_LOCATION', None)
     SITEMAPS_NAME = SIMPLE_MENUS_CONFIG.get('SITEMAPS_NAME', None)
     SITEMAPS_EXCLUDE = SIMPLE_MENUS_CONFIG.get('SITEMAPS_EXCLUDE', None)
-    
+
     if SITEMAPS_EXCLUDE:
         SITEMAPS_EXCLUDE = list(SITEMAPS_EXCLUDE)
-        
+
     if SITEMAPS_LOCATION is None:
         return groups
-    
+
     _module = __import__(SITEMAPS_LOCATION, globals(), locals(), [ SITEMAPS_NAME ], 0)
     _sitemaps = _module.sitemaps
-    
+
     if not isinstance(_sitemaps, dict):
         return groups
-    
+
     cache_groups = cache_safe_get('build_link_select')
-    
+
     if cache_groups is not None:
         return cache_groups
-    
+
     for name in _sitemaps:
         if SITEMAPS_EXCLUDE and (name in SITEMAPS_EXCLUDE):
             continue
@@ -60,5 +60,5 @@ def build_link_select():
         except:
             pass
     cache_safe_set('build_link_select', groups, 1800)
-    
+
     return groups
