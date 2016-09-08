@@ -1,4 +1,7 @@
-#from django.utils.safestring import mark_safe
+import re
+from django.conf import settings
+from django.core.cache import cache
+
 
 def build_link_select():
     '''
@@ -9,9 +12,6 @@ def build_link_select():
             ('Item 1', '/path/to/item1') ]
     }
     '''
-    from mylibs.helpers.caching import cache_safe_set, cache_safe_get
-    from django.conf import settings
-    import re
     ITEM_TYPE_RE = re.compile(ur'^[a-zA-Z]+\:\s+(.+)$')
 
     SIMPLE_MENUS_CONFIG = getattr(settings,  'SIMPLE_MENUS_CONFIG', None)
@@ -36,7 +36,7 @@ def build_link_select():
     if not isinstance(_sitemaps, dict):
         return groups
 
-    cache_groups = cache_safe_get('build_link_select')
+    cache_groups = cache.get('build_link_select', None)
 
     if cache_groups is not None:
         return cache_groups
@@ -59,6 +59,6 @@ def build_link_select():
                 groups[name.capitalize()] = locations
         except:
             pass
-    cache_safe_set('build_link_select', groups, 1800)
+    cache.set('build_link_select', groups, 1800)
 
     return groups

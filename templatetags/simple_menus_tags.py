@@ -1,6 +1,6 @@
 from django import template
 from django.template import Node, Library, loader, Context
-from mylibs.helpers.caching import smart_cache
+from django.core.cache import cache
 from simple_menus.models import Menu, MenuItem
 
 register = template.Library()
@@ -12,7 +12,10 @@ def show_menu(context, menu_title, template_name='simple_menus/menu.html', cache
         cache_time = int(cache_time)
         if cache_key is None:
             cache_key = 'sm:'+menu_title
-        menu = smart_cache(cache_key, Menu.objects.get(title=menu_title), cache_time)
+        menu = cache.get(cache_key, None)
+        if menu is None:
+            menu = Menu.objects.get(title=menu_title)
+            cache.set(cache_key, menu, cache_time)
     else:
         menu = Menu.objects.get(title=menu_title)
     
